@@ -3,7 +3,6 @@
 #endif
 
 #if CONSOLE_ENABLED
-using System.Collections;
 using System.Diagnostics;
 using System.Text;
 #endif
