@@ -1,8 +1,9 @@
 ﻿#if DEBUG || DEVELOPMENT_BUILD || UNITY_EDITOR
-#define USE_CUSTOM_LOGGER
+#define CONSOLE_ENABLED
 #endif
 
-#if USE_CUSTOM_LOGGER
+#if CONSOLE_ENABLED
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 #endif
@@ -11,12 +12,46 @@ using UnityEngine;
 
 namespace Myna.Unity.Debug
 {
+	public class ConsoleLog
+	{
+		public string Message = "";
+		public string StackTrace = "";
+		public LogType LogType;
+	}
+
 	public static class Console
 	{
-#if USE_CUSTOM_LOGGER
+#if CONSOLE_ENABLED
 		private readonly static StackTrace _stackTrace = new();
 		private readonly static StringBuilder _sb = new();
+		private readonly static List<ConsoleLog> _logs = new();
+
+		static Console()
+		{
+			_logs.Clear();
+			Application.logMessageReceived -= OnLogMessageReceived;
+			Application.logMessageReceived += OnLogMessageReceived;
+		}
+
+		private static void OnLogMessageReceived(string message, string stackTrace, LogType logType)
+		{
+			_logs.Add(new ConsoleLog()
+			{
+				Message = message,
+				StackTrace = stackTrace,
+				LogType = logType
+			});
+		}
 #endif
+
+		public static IEnumerable<ConsoleLog> GetLogs()
+		{
+#if CONSOLE_ENABLED
+			return _logs.AsEnumerable();
+#else
+			return Array.Empty<ConsoleLog>();
+#endif
+		}
 
 		// In order to navigate to where this call was made from, 
 		// I need to export my debug scripts as a separate DLL: 
@@ -27,7 +62,7 @@ namespace Myna.Unity.Debug
 
 		private static void Log(LogType logType, string message)
 		{
-#if USE_CUSTOM_LOGGER
+#if CONSOLE_ENABLED
 			static bool TryGetCallingFrame(out StackFrame? frame)
 			{
 				if (_stackTrace.FrameCount < 3)
