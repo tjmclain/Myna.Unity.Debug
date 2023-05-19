@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Myna.Unity.Debug
@@ -11,6 +13,8 @@ namespace Myna.Unity.Debug
 	public class Logger
 	{
 		private LogType _filterLogType = LogType.Exception;
+
+		private static readonly Regex _anonMethodRegex = new Regex(@"^<(\w+)>b_.+$");
 
 		[Conditional("DEBUG")]
 		public void Log(string message) =>
@@ -44,7 +48,7 @@ namespace Myna.Unity.Debug
 				return;
 			}
 
-			if (TryGetCallTags(out string typeName, out string methodName))
+			if (TryGetTags(out string typeName, out string methodName))
 			{
 				var sb = new StringBuilder();
 				if (!string.IsNullOrEmpty(typeName))
@@ -68,25 +72,72 @@ namespace Myna.Unity.Debug
 		}
 
 		// https://answers.unity.com/questions/289006/catching-double-clicking-console-messages.html
-		internal static bool TryGetCallTags(out string typeName, out string methodName)
+		internal static bool TryGetTags(out string className, out string methodName)
 		{
-			var stackTrace = new StackTrace();
-			int index = Mathf.Min(stackTrace.FrameCount - 1, 3);
+			className = null;
+			methodName = null;
 
+			var stackTrace = new StackTrace();
+
+			// Not sure why, but index 3 is (usually) the correct level
+			int index = Mathf.Min(stackTrace.FrameCount - 1, 3);
 			if (index < 0)
 			{
-				typeName = null;
-				methodName = null;
 				return false;
 			}
 
-			// Not sure why, but index 2 is the correct level
 			var frame = stackTrace.GetFrame(index);
-			var methodInfo = frame.GetMethod();
-			var typeInfo = methodInfo.ReflectedType ?? methodInfo.DeclaringType;
+			var method = frame.GetMethod();
 
-			typeName = GetFriendlyTypeName(typeInfo);
-			methodName = methodInfo.Name;
+			if (TryGetAnonymousMethodTags(method, stackTrace, index, out className, out methodName))
+			{
+				return true;
+			}
+
+			var typeInfo = method.ReflectedType ?? method.DeclaringType;
+			className = GetFriendlyTypeName(typeInfo);
+			methodName = method.Name;
+			return true;
+		}
+
+		// Check if our method represents an anonymous method:
+		// https://stackoverflow.com/questions/23228075/determine-if-methodinfo-represents-a-lambda-expression
+		// NOTE: I tried the above, and it didn't do what I wanted it to do
+		// (It skipped the anonymous method, but the method it *did* display wasn't right)
+		// So, try getting a friendlier name with regex instead
+		internal static bool TryGetAnonymousMethodTags(
+			MethodBase method,
+			StackTrace stackTrace,
+			int frameIndex,
+			out string className,
+			out string methodName
+		)
+		{
+			className = null;
+			methodName = null;
+
+			var match = _anonMethodRegex.Match(method.Name);
+			if (!match.Success)
+			{
+				return false;
+			}
+
+			methodName = match.Groups[1].Value;
+			// This is the best solution to find the 'typeName' I could think of unfortunately
+			// If I call 'DeclaringType' or 'ReflectedType' on the methodbase
+			// I get '<>c', where a return type would go in the braces I think
+			for (int i = frameIndex + 1; i < stackTrace.FrameCount; i++)
+			{
+				var frame = stackTrace.GetFrame(i);
+				method = frame.GetMethod();
+				if (method.Name == methodName)
+				{
+					var typeInfo = method.ReflectedType ?? method.DeclaringType;
+					className = GetFriendlyTypeName(typeInfo);
+					break;
+				}
+			}
+
 			return true;
 		}
 
@@ -137,5 +188,7 @@ namespace Myna.Unity.Debug
 
 			return type.Name;
 		}
+
+
 	}
 }
