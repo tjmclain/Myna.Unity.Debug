@@ -74,8 +74,8 @@ namespace Myna.Unity.Debug
 		// https://answers.unity.com/questions/289006/catching-double-clicking-console-messages.html
 		internal static bool TryGetTags(out string className, out string methodName)
 		{
-			className = null;
-			methodName = null;
+			className = string.Empty;
+			methodName = string.Empty;
 
 			var stackTrace = new StackTrace();
 
@@ -113,8 +113,8 @@ namespace Myna.Unity.Debug
 			out string methodName
 		)
 		{
-			className = null;
-			methodName = null;
+			className = string.Empty;
+			methodName = string.Empty;
 
 			var match = _anonMethodRegex.Match(method.Name);
 			if (!match.Success)
@@ -146,7 +146,7 @@ namespace Myna.Unity.Debug
 		{
 			if (type == null)
 			{
-				return null;
+				return string.Empty;
 			}
 
 			if (type.IsGenericType)
@@ -155,7 +155,7 @@ namespace Myna.Unity.Debug
 
 				string name = type.Name;
 				int length = name.IndexOf('`');
-				string mainName = name.Substring(0, length);
+				string mainName = name[..length];
 				sb.Append(mainName);
 
 				sb.Append('<');
