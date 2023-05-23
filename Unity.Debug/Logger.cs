@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -12,9 +13,29 @@ namespace Myna.Unity.Debug
 	// I need to export my debug scripts as a separate DLL
 	public class Logger
 	{
-		private LogType _filterLogType = LogType.Exception;
+		// Note: "LogType.Exception" is the lowest value in the LogType enum
+		// So, setting _logLevel to "LogType.Exception" means all logs are visible.
+		private LogType _logLevel = LogType.Exception;
+
+#if UNITY_EDITOR
+		private LogType _playModeLogLevel = LogType.Exception;
+		private LogType _editModeLogLevel = LogType.Exception;
+#endif
 
 		private static readonly Regex _anonMethodRegex = new Regex(@"^<(\w+)>b_.+$");
+
+		private static readonly Dictionary<Type, string> _friendlyTypeNames = new Dictionary<Type, string>()
+		{
+			{ typeof(int), "int" },
+			{ typeof(short), "short" },
+			{ typeof(long), "long" },
+			{ typeof(byte), "byte" },
+			{ typeof(float), "float" },
+			{ typeof(double), "double" },
+			{ typeof(decimal), "decimal" },
+			{ typeof(string), "string" },
+			{ typeof(bool), "bool" },
+		};
 
 		[Conditional("DEBUG")]
 		public void Log(string message) =>
@@ -31,14 +52,34 @@ namespace Myna.Unity.Debug
 		public void LogException(Exception exception) =>
 			UnityEngine.Debug.LogException(exception);
 
-		public void FilterLogType(LogType logType)
+		public LogType GetLogLevel()
 		{
-			_filterLogType = logType;
+#if UNITY_EDITOR
+			return Application.isPlaying ? _playModeLogLevel : _editModeLogLevel;
+#else
+			return _logLevel;
+#endif
+		}
+
+		public void SetLogLevel(LogType logLevel) =>
+			SetLogLevel(logLevel, logLevel, logLevel);
+
+		public void SetLogLevel(
+			LogType logLevel,
+			LogType playModeLogLevel,
+			LogType editModeLogLevel
+		)
+		{
+			_logLevel = logLevel;
+#if UNITY_EDITOR
+			_playModeLogLevel = playModeLogLevel;
+			_editModeLogLevel = editModeLogLevel;
+#endif
 		}
 
 		public bool IsFiltered(LogType logType)
 		{
-			return logType >= _filterLogType && logType != LogType.Exception;
+			return logType < GetLogLevel();
 		}
 
 		internal void Log(LogType logType, string message)
@@ -149,6 +190,11 @@ namespace Myna.Unity.Debug
 				return string.Empty;
 			}
 
+			if (_friendlyTypeNames.TryGetValue(type, out string result))
+			{
+				return result;
+			}
+
 			if (type.IsGenericType)
 			{
 				var sb = new StringBuilder();
@@ -170,7 +216,5 @@ namespace Myna.Unity.Debug
 
 			return type.Name;
 		}
-
-
 	}
 }
