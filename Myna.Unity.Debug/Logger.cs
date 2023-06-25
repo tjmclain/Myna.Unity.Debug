@@ -181,6 +181,11 @@ namespace Myna.Unity.Debug
 
 		public void Log(DebugLogBuilder log)
 		{
+			if (!IsLogTypeAllowed(log.LogType))
+			{
+				return;
+			}
+
 			string? callerTypeName = log.CallerTypeName;
 			string? methodName = log.MethodName;
 
@@ -188,6 +193,10 @@ namespace Myna.Unity.Debug
 			{
 				string tag = FormatTag(callerTypeName, methodName);
 				_unityLogger.Log(log.LogType, tag, log.Message);
+			}
+			else
+			{
+				_unityLogger.Log(log.LogType, log.Message);
 			}
 		}
 		#endregion
@@ -227,11 +236,8 @@ namespace Myna.Unity.Debug
 
 		private static bool TryGetCallerTypeAndMethodName(ref string? callerTypeName, ref string? methodName)
 		{
-			static void GetStackFrameIndex(StackTrace stackTrace, out int index)
+			static bool GetStackFrameIndex(StackTrace stackTrace, out int index)
 			{
-				// default to top of stack
-				index = 0;
-
 				for (int i = 1; i < stackTrace.FrameCount; i++)
 				{
 					var frame = stackTrace.GetFrame(i);
@@ -240,9 +246,12 @@ namespace Myna.Unity.Debug
 					if (type.Namespace != _namespace)
 					{
 						index = i;
-						break;
+						return true;
 					}
 				}
+
+				index = -1;
+				return false;
 			}
 
 			if (!string.IsNullOrEmpty(callerTypeName) && !string.IsNullOrEmpty(methodName))
@@ -256,7 +265,11 @@ namespace Myna.Unity.Debug
 				return false;
 			}
 
-			GetStackFrameIndex(stackTrace, out int index);
+			if (!GetStackFrameIndex(stackTrace, out int index))
+			{
+				return false;
+			}
+
 			var frame = stackTrace.GetFrame(index);
 			var method = frame.GetMethod();
 			var callerTypeInfo = method.ReflectedType ?? method.DeclaringType;
