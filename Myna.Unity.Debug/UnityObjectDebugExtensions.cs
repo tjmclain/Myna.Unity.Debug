@@ -7,7 +7,7 @@ namespace Myna.Unity.Debug
 	public static class UnityObjectDebugExtensions
 	{
 		public static void Log(this UnityEngine.Object self, object message)
-			=> Debug.Log(UnityEngine.LogType.Log, message, self); aaa
+			=> Debug.Log(UnityEngine.LogType.Log, message, self);
 
 		public static void LogWarning(this UnityEngine.Object self, object message)
 			=> Debug.Log(UnityEngine.LogType.Warning, message, self);
