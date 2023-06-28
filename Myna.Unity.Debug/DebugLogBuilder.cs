@@ -28,6 +28,13 @@ namespace Myna.Unity.Debug
 			set => _methodName = value;
 		}
 
+		private UnityEngine.Object? _context = null;
+		public UnityEngine.Object? Context
+		{
+			get => _context;
+			set => _context = value;
+		}
+
 		private Logger _logger = new Logger();
 		public Logger Logger
 		{

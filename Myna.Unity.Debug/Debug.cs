@@ -9,6 +9,9 @@ namespace Myna.Unity.Debug
 		public static readonly Logger Logger = new Logger();
 
 		#region Mirroring Methods from UnityEngine.Debug
+		public static void Log(LogType logType, object message)
+			=> Logger.Log(logType, message);
+
 		public static void Log(object message) =>
 			Logger.Log(LogType.Log, message);
 

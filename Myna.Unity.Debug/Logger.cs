@@ -192,7 +192,7 @@ namespace Myna.Unity.Debug
 			if (TryGetCallerTypeAndMethodName(ref callerTypeName, ref methodName))
 			{
 				string tag = FormatTag(callerTypeName, methodName);
-				_unityLogger.Log(log.LogType, tag, log.Message);
+				_unityLogger.Log(log.LogType, tag, log.Message, log.Context);
 			}
 			else
 			{
