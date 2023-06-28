@@ -162,6 +162,16 @@ namespace Myna.Unity.Debug
 		public void Log(LogType logType, object message)
 			=> Log(logType, string.Empty, message);
 
+		public void Log(LogType logType, object message, UnityEngine.Object context)
+		{
+			using (var log = CreateLog(logType))
+			{
+				log.Context = context;
+				log.Append(message.ToString());
+				Log(log);
+			}
+		}
+
 		public void Log(LogType logType, string tag, object message)
 		{
 			if (!IsLogTypeAllowed(logType))
@@ -196,28 +206,28 @@ namespace Myna.Unity.Debug
 			}
 			else
 			{
-				_unityLogger.Log(log.LogType, log.Message);
+				_unityLogger.Log(log.LogType, (object)log.Message, log.Context);
 			}
 		}
 		#endregion
 
 		#region DebugLogBuilder Utility Methods
-		public DebugLogBuilder CreateLog()
-			=> Create(LogType.Log);
-
-		public DebugLogBuilder CreateWarning()
-			=> Create(LogType.Warning);
-
-		public DebugLogBuilder CreateError()
-			=> Create(LogType.Error);
-
-		public DebugLogBuilder Create(LogType logType)
+		public DebugLogBuilder CreateLog(LogType logType)
 		{
 			var log = DebugLogBuilder.Create(logType);
 			log.CallerTypeName = CallerTypeName;
 			log.Logger = this;
 			return log;
 		}
+
+		public DebugLogBuilder CreateLog()
+			=> CreateLog(LogType.Log);
+
+		public DebugLogBuilder CreateWarning()
+			=> CreateLog(LogType.Warning);
+
+		public DebugLogBuilder CreateError()
+			=> CreateLog(LogType.Error);
 		#endregion
 
 		// https://answers.unity.com/questions/289006/catching-double-clicking-console-messages.html

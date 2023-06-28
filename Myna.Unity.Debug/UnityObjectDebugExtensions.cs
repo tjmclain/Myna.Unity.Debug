@@ -7,107 +7,48 @@ namespace Myna.Unity.Debug
 	public static class UnityObjectDebugExtensions
 	{
 		public static void Log(this UnityEngine.Object self, object message)
-			=> Log(self, UnityEngine.LogType.Log, message);
+			=> Debug.Log(UnityEngine.LogType.Log, message, self); aaa
 
 		public static void LogWarning(this UnityEngine.Object self, object message)
-			=> Log(self, UnityEngine.LogType.Warning, message);
+			=> Debug.Log(UnityEngine.LogType.Warning, message, self);
 
 		public static void LogError(this UnityEngine.Object self, object message)
-			=> Log(self, UnityEngine.LogType.Error, message);
-
-		private static void Log(UnityEngine.Object self, UnityEngine.LogType logType, object message)
-		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = self;
-				log.Append(message.ToString());
-				log.Print();
-			}
-		}
+			=> Debug.Log(UnityEngine.LogType.Error, message, self);
 
 		public static void Log(this UnityEngine.Object self, string a, string b)
-			=> Log(self, UnityEngine.LogType.Log, a, b);
+			=> Debug.Log(self, UnityEngine.LogType.Log, a, b);
 
 		public static void LogWarning(this UnityEngine.Object self, string a, string b)
-			=> Log(self, UnityEngine.LogType.Warning, a, b);
+			=> Debug.Log(self, UnityEngine.LogType.Warning, a, b);
 
 		public static void LogError(this UnityEngine.Object self, string a, string b)
-			=> Log(self, UnityEngine.LogType.Error, a, b);
-
-		private static void Log(UnityEngine.Object self, UnityEngine.LogType logType, string a, string b)
-		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = self;
-				log.Append(a);
-				log.Append(b);
-				log.Print();
-			}
-		}
+			=> Debug.Log(self, UnityEngine.LogType.Error, a, b);
 
 		public static void Log(this UnityEngine.Object self, string a, string b, string c)
-			=> Log(self, UnityEngine.LogType.Log, a, b, c);
+			=> Debug.Log(self, UnityEngine.LogType.Log, a, b, c);
 
 		public static void LogWarning(this UnityEngine.Object self, string a, string b, string c)
-			=> Log(self, UnityEngine.LogType.Warning, a, b, c);
+			=> Debug.Log(self, UnityEngine.LogType.Warning, a, b, c);
 
 		public static void LogError(this UnityEngine.Object self, string a, string b, string c)
-			=> Log(self, UnityEngine.LogType.Error, a, b, c);
-
-		private static void Log(UnityEngine.Object self, UnityEngine.LogType logType, string a, string b, string c)
-		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = self;
-				log.Append(a);
-				log.Append(b);
-				log.Append(c);
-				log.Print();
-			}
-		}
+			=> Debug.Log(self, UnityEngine.LogType.Error, a, b, c);
 
 		public static void Log(this UnityEngine.Object self, string a, string b, string c, string d)
-			=> Log(self, UnityEngine.LogType.Log, a, b, c, d);
+			=> Debug.Log(self, UnityEngine.LogType.Log, a, b, c, d);
 
 		public static void LogWarning(this UnityEngine.Object self, string a, string b, string c, string d)
-			=> Log(self, UnityEngine.LogType.Warning, a, b, c, d);
+			=> Debug.Log(self, UnityEngine.LogType.Warning, a, b, c, d);
 
 		public static void LogError(this UnityEngine.Object self, string a, string b, string c, string d)
-			=> Log(self, UnityEngine.LogType.Error, a, b, c, d);
-
-		private static void Log(UnityEngine.Object self, UnityEngine.LogType logType, string a, string b, string c, string d)
-		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = self;
-				log.Append(a);
-				log.Append(b);
-				log.Append(c);
-				log.Append(d);
-				log.Print();
-			}
-		}
+			=> Debug.Log(self, UnityEngine.LogType.Error, a, b, c, d);
 
 		public static void Log(this UnityEngine.Object self, params string[] messages)
-			=> Log(self, UnityEngine.LogType.Log, messages);
+			=> Debug.Log(self, UnityEngine.LogType.Log, messages);
 
 		public static void LogWarning(this UnityEngine.Object self, params string[] messages)
-			=> Log(self, UnityEngine.LogType.Warning, messages);
+			=> Debug.Log(self, UnityEngine.LogType.Warning, messages);
 
 		public static void LogError(this UnityEngine.Object self, params string[] messages)
-			=> Log(self, UnityEngine.LogType.Error, messages);
-
-		private static void Log(UnityEngine.Object self, UnityEngine.LogType logType, params string[] messages)
-		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = self;
-				foreach (string message in messages)
-				{
-					log.Append(message);
-				}
-				log.Print();
-			}
-		}
+			=> Debug.Log(self, UnityEngine.LogType.Error, messages);
 	}
 }

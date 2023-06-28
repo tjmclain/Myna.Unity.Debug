@@ -125,7 +125,7 @@ namespace Myna.Unity.Debug
 		public DebugLogBuilder AppendFormat(string format, params object[] args)
 			=> Append(string.Format(format, args));
 
-		public DebugLogBuilder AppenFormatIf(string format, bool condition, params object[] args)
+		public DebugLogBuilder AppendFormatIf(string format, bool condition, params object[] args)
 		{
 			return condition ? AppendFormat(format, args) : this;
 		}
