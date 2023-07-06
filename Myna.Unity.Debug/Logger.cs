@@ -6,13 +6,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Myna.Unity.Debug
 {
-	// In order to navigate to where the original call was made from when I double click the log in the console, 
+	// In order to navigate to where the original call was made from when I double click the log in the console,
 	// I need to export my debug scripts as a separate DLL
 	public class Logger
 	{
 		private LogType _filterLogType = LogType.Log;
+
 		public LogType FilterLogType
 		{
 			get => _filterLogType;
@@ -20,6 +25,7 @@ namespace Myna.Unity.Debug
 		}
 
 		private LogType _editModeFilterLogType = LogType.Log;
+
 		public LogType EditModeFilterLogType
 		{
 			get => _editModeFilterLogType;
@@ -27,6 +33,7 @@ namespace Myna.Unity.Debug
 		}
 
 		private string? _callerTypeName = null;
+
 		public string? CallerTypeName
 		{
 			get => _callerTypeName;
@@ -41,6 +48,7 @@ namespace Myna.Unity.Debug
 		private static readonly Regex _coroutineRegex = new Regex(@"^(\S+)\+<(\S+)>d__\d+$");
 		private static readonly Regex _anonMethodRegex = new Regex(@"^<(\S+)>b__\d+_\d+$");
 		private static readonly Regex _localMethodRegex = new Regex(@"^<(\S+)>g__\S+|\d+_\d+$");
+
 		private static readonly Dictionary<Type, string> _friendlyTypeNames = new Dictionary<Type, string>()
 		{
 			{ typeof(int), "int" },
@@ -55,6 +63,7 @@ namespace Myna.Unity.Debug
 		};
 
 		#region Constructors
+
 		public Logger()
 		{
 			_filterLogType = LogType.Log;
@@ -66,9 +75,11 @@ namespace Myna.Unity.Debug
 			_unityLogger = UnityEngine.Debug.unityLogger;
 			_namespace = typeof(Logger).Namespace;
 		}
-		#endregion
+
+		#endregion Constructors
 
 		#region Static Interface
+
 		public static string GetTag(object caller, string methodName)
 			=> GetTag(caller.GetType(), methodName);
 
@@ -130,20 +141,27 @@ namespace Myna.Unity.Debug
 
 			return type.Name;
 		}
-		#endregion
+
+		#endregion Static Interface
 
 		#region Getter/Setter Methods
+
 		public bool IsLogTypeAllowed(LogType logType)
 		{
-			var allowedLogType = Application.isPlaying
+#if UNITY_EDITOR
+			var allowedLogType = EditorApplication.isPlaying
 				? _filterLogType
 				: _editModeFilterLogType;
-
 			return (int)logType <= (int)allowedLogType;
+#else
+			return (int)logType <= (int)_filterLogType;
+#endif
 		}
-		#endregion
+
+		#endregion Getter/Setter Methods
 
 		#region Log Methods
+
 		public void Log(object message)
 			=> Log(LogType.Log, message);
 
@@ -209,9 +227,11 @@ namespace Myna.Unity.Debug
 				_unityLogger.Log(log.LogType, (object)log.Message, log.Context);
 			}
 		}
-		#endregion
+
+		#endregion Log Methods
 
 		#region DebugLogBuilder Utility Methods
+
 		public DebugLogBuilder CreateLog(LogType logType)
 		{
 			var log = DebugLogBuilder.Create(logType);
@@ -228,7 +248,8 @@ namespace Myna.Unity.Debug
 
 		public DebugLogBuilder CreateError()
 			=> CreateLog(LogType.Error);
-		#endregion
+
+		#endregion DebugLogBuilder Utility Methods
 
 		// https://answers.unity.com/questions/289006/catching-double-clicking-console-messages.html
 		private static bool TryGetTag(ref string tag)
@@ -311,7 +332,7 @@ namespace Myna.Unity.Debug
 				return true;
 			}
 
-			// If we're not a special case, set to the default caller type and method tags 
+			// If we're not a special case, set to the default caller type and method tags
 			callerTypeName ??= GetFriendlyTypeName(callerTypeInfo);
 			methodName ??= method.Name;
 			return true;

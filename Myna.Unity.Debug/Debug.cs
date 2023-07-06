@@ -8,7 +8,14 @@ namespace Myna.Unity.Debug
 	{
 		public static readonly Logger Logger = new Logger();
 
+		public static void Log(string message)
+			=> Logger.Log(message);
+
+		public static void Log(LogType logType, string message)
+			=> Logger.Log(logType, message);
+
 		#region Mirroring Methods from UnityEngine.Debug
+
 		public static void Log(LogType logType, object message)
 			=> Logger.Log(logType, message);
 
@@ -38,9 +45,11 @@ namespace Myna.Unity.Debug
 
 		public static void Assert(bool condition)
 			=> UnityEngine.Debug.Assert(condition);
-		#endregion
+
+		#endregion Mirroring Methods from UnityEngine.Debug
 
 		#region Conditional Methods
+
 		public static void LogIf(object message, Func<bool> condition)
 			=> LogIf(message, condition.Invoke());
 
@@ -73,9 +82,11 @@ namespace Myna.Unity.Debug
 				Logger.Log(LogType.Warning, message);
 			}
 		}
-		#endregion
+
+		#endregion Conditional Methods
 
 		#region Log Concatenation Methods
+
 		public static void Log(LogType logType, string a, string b)
 			=> Log(null, logType, a, b);
 
@@ -151,16 +162,6 @@ namespace Myna.Unity.Debug
 		public static void Log(LogType logType, params string[] messages)
 			=> Log(null, logType, messages);
 
-
-		public static void Log(params string[] messages)
-			=> Log(null, LogType.Log, messages);
-
-		public static void LogWarning(params string[] messages)
-			=> Log(null, LogType.Warning, messages);
-
-		public static void LogError(params string[] messages)
-			=> Log(null, LogType.Error, messages);
-
 		public static void Log(UnityEngine.Object? context, LogType logType, params string[] messages)
 		{
 			using (var log = DebugLogBuilder.Create(logType))
@@ -173,16 +174,20 @@ namespace Myna.Unity.Debug
 				log.Print();
 			}
 		}
-		#endregion
+
+		#endregion Log Concatenation Methods
 
 		#region Logger
+
 		public static Logger CreateLogger()
 		{
 			return new Logger();
 		}
-		#endregion
+
+		#endregion Logger
 
 		#region DebugLogBuilder
+
 		public static DebugLogBuilder CreateLog()
 			=> DebugLogBuilder.Create(LogType.Log);
 
@@ -191,6 +196,7 @@ namespace Myna.Unity.Debug
 
 		public static DebugLogBuilder CreateError()
 			=> DebugLogBuilder.Create(LogType.Error);
-		#endregion
+
+		#endregion DebugLogBuilder
 	}
 }

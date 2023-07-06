@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Myna.Unity.Debug
+﻿namespace Myna.Unity.Debug
 {
 	public static class UnityObjectDebugExtensions
 	{
