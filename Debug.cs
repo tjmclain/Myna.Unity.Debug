@@ -12,33 +12,25 @@ namespace Myna.Unity.Debug
 
 		#region UnityEngine.Debug
 
-		public static void Log(object message)
-			=> Logger.Log(LogType.Log, message);
+		public static void Log(object message) => Logger.Log(LogType.Log, message);
 
-		public static void LogFormat(string format, params object[] args)
-			=> Logger.LogFormat(format, args);
+		public static void LogFormat(string format, params object[] args) => Logger.LogFormat(format, args);
 
-		public static void LogWarning(object message)
-			=> Logger.Log(LogType.Warning, message);
+		public static void LogWarning(object message) => Logger.Log(LogType.Warning, message);
 
-		public static void LogWarningFormat(string format, params object[] args)
-			=> Logger.LogFormat(format, args);
+		public static void LogWarningFormat(string format, params object[] args) => Logger.LogWarningFormat(format, args);
 
-		public static void LogError(object message)
-			=> Logger.Log(LogType.Error, message);
+		public static void LogError(object message) => Logger.Log(LogType.Error, message);
 
-		public static void LogErrorFormat(string format, params object[] args)
-			=> Logger.LogFormat(format, args);
+		public static void LogErrorFormat(string format, params object[] args) => Logger.LogErrorFormat(format, args);
 
-		public static void LogException(Exception exception)
-			=> Logger.LogException(exception);
+		public static void LogException(Exception exception) => Logger.LogException(exception);
 
-		public static void Assert(bool condition)
-			=> UnityEngine.Debug.Assert(condition);
+		public static void Assert(bool condition) => Logger.Assert(condition);
 
 		#endregion UnityEngine.Debug
 
-		#region LogInfo
+		#region LogInfo / Properties
 
 		public static LogInfo Tag(string tag) => LogInfo.Get().Tag(tag);
 
@@ -56,6 +48,6 @@ namespace Myna.Unity.Debug
 
 		public static LogInfo If<T>(Predicate<T> condition, T obj) => LogInfo.Get().If(condition, obj);
 
-		#endregion LogInfo
+		#endregion LogInfo / Properties
 	}
 }

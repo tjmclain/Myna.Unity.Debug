@@ -1,4 +1,6 @@
-﻿namespace Myna.Unity.Debug
+﻿using System;
+
+namespace Myna.Unity.Debug
 {
 	using UnityObject = UnityEngine.Object;
 
@@ -90,5 +92,10 @@
 		}
 
 		#endregion LogError Methods
+
+		public static void LogException(this UnityObject context, Exception exception)
+		{
+			UnityEngine.Debug.LogException(exception, context);
+		}
 	}
 }
