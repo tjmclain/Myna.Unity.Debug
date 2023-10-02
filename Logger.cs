@@ -12,15 +12,10 @@ namespace Myna.Unity.Debug
 	// I need to export my debug scripts as a separate DLL
 	public class Logger
 	{
-		private static readonly ILogger _unityLogger;
+		private static readonly ILogger _unityLogger = UnityEngine.Debug.unityLogger;
 
 		public LogType FilterLogType { get; set; } = LogType.Log;
 		public LogType EditModeFilterLogType { get; set; } = LogType.Log;
-
-		static Logger()
-		{
-			_unityLogger = UnityEngine.Debug.unityLogger;
-		}
 
 		public bool IsLogTypeAllowed(LogType logType)
 		{
@@ -71,14 +66,14 @@ namespace Myna.Unity.Debug
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(tag))
+#if DEVELOPMENT_BUILD || UNITY_EDITOR || DEBUG
+			if (string.IsNullOrEmpty(tag))
 			{
-				_unityLogger.Log(logType, tag, message, context);
+				tag = TagUtility.GetDefaultTag();
 			}
-			else
-			{
-				_unityLogger.Log(logType, message, context);
-			}
+#endif
+
+			_unityLogger.Log(logType, tag, message, context);
 		}
 
 		#endregion Log Methods
