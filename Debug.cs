@@ -3,6 +3,8 @@ using LogType = UnityEngine.LogType;
 
 namespace Myna.Unity.Debug
 {
+	using UnityObject = UnityEngine.Object;
+
 	// static wrapper for Logger calls
 	public static class Debug
 	{
@@ -14,12 +16,12 @@ namespace Myna.Unity.Debug
 		public static void Log(LogType logType, string message)
 			=> Logger.Log(logType, message);
 
-		#region Mirroring Methods from UnityEngine.Debug
+		#region UnityEngine.Debug
 
 		public static void Log(LogType logType, object message)
 			=> Logger.Log(logType, message);
 
-		public static void Log(LogType logType, object message, UnityEngine.Object context)
+		public static void Log(LogType logType, object message, UnityObject context)
 			=> Logger.Log(logType, message, context);
 
 		public static void Log(object message)
@@ -46,7 +48,7 @@ namespace Myna.Unity.Debug
 		public static void Assert(bool condition)
 			=> UnityEngine.Debug.Assert(condition);
 
-		#endregion Mirroring Methods from UnityEngine.Debug
+		#endregion UnityEngine.Debug
 
 		#region Conditional Methods
 
@@ -99,15 +101,13 @@ namespace Myna.Unity.Debug
 		public static void LogError(string a, string b)
 			=> Log(null, LogType.Error, a, b);
 
-		public static void Log(UnityEngine.Object? context, LogType logType, string a, string b)
+		public static void Log(UnityObject context, LogType logType, string a, string b)
 		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = context;
-				log.Append(a);
-				log.Append(b);
-				log.Print();
-			}
+			using var log = Message.Create(logType);
+			log.Context = context;
+			log.Append(a);
+			log.Append(b);
+			log.Print();
 		}
 
 		public static void Log(LogType logType, string a, string b, string c)
@@ -122,16 +122,14 @@ namespace Myna.Unity.Debug
 		public static void LogError(string a, string b, string c)
 			=> Log(null, LogType.Error, a, b, c);
 
-		public static void Log(UnityEngine.Object? context, LogType logType, string a, string b, string c)
+		public static void Log(UnityObject context, LogType logType, string a, string b, string c)
 		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = context;
-				log.Append(a);
-				log.Append(b);
-				log.Append(c);
-				log.Print();
-			}
+			using var log = Message.Create(logType);
+			log.Context = context;
+			log.Append(a);
+			log.Append(b);
+			log.Append(c);
+			log.Print();
 		}
 
 		public static void Log(LogType logType, string a, string b, string c, string d)
@@ -146,57 +144,31 @@ namespace Myna.Unity.Debug
 		public static void LogError(string a, string b, string c, string d)
 			=> Log(null, LogType.Error, a, b, c, d);
 
-		public static void Log(UnityEngine.Object? context, LogType logType, string a, string b, string c, string d)
+		public static void Log(UnityObject context, LogType logType, string a, string b, string c, string d)
 		{
-			using (var log = DebugLogBuilder.Create(logType))
-			{
-				log.Context = context;
-				log.Append(a);
-				log.Append(b);
-				log.Append(c);
-				log.Append(d);
-				log.Print();
-			}
+			using var log = Message.Create(logType);
+			log.Context = context;
+			log.Append(a);
+			log.Append(b);
+			log.Append(c);
+			log.Append(d);
+			log.Print();
 		}
 
 		public static void Log(LogType logType, params string[] messages)
 			=> Log(null, logType, messages);
 
-		public static void Log(UnityEngine.Object? context, LogType logType, params string[] messages)
+		public static void Log(UnityObject context, LogType logType, params string[] messages)
 		{
-			using (var log = DebugLogBuilder.Create(logType))
+			using var log = Message.Create(logType);
+			log.Context = context;
+			foreach (string message in messages)
 			{
-				log.Context = context;
-				foreach (string message in messages)
-				{
-					log.Append(message);
-				}
-				log.Print();
+				log.Append(message);
 			}
+			log.Print();
 		}
 
 		#endregion Log Concatenation Methods
-
-		#region Logger
-
-		public static Logger CreateLogger()
-		{
-			return new Logger();
-		}
-
-		#endregion Logger
-
-		#region DebugLogBuilder
-
-		public static DebugLogBuilder CreateLog()
-			=> DebugLogBuilder.Create(LogType.Log);
-
-		public static DebugLogBuilder CreateWarning()
-			=> DebugLogBuilder.Create(LogType.Warning);
-
-		public static DebugLogBuilder CreateError()
-			=> DebugLogBuilder.Create(LogType.Error);
-
-		#endregion DebugLogBuilder
 	}
 }

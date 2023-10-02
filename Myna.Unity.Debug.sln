@@ -3,18 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Myna.Stats", "Myna.Stats\Myna.Stats.csproj", "{77A4D00F-CA39-4700-97F3-C385A62BF740}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Myna.Unity.Debug", "Myna.Unity.Debug\Myna.Unity.Debug.csproj", "{B9F1A6B1-0893-4865-ACBD-C666DDA05985}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Myna.Windows.ResizeImage", "Myna.Windows.ResizeImage\Myna.Windows.ResizeImage.csproj", "{04905A1F-633B-4CE3-A9E4-CB1DB1F03E59}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Myna.Utilities", "Myna.Utilities\Myna.Utilities.csproj", "{355DEE24-478D-4C91-9921-F56A72B28ECA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{102BFCB8-C5E4-4BA5-88D6-A92AA412ED2B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Myna.Unity.Debug", "Myna.Unity.Debug.csproj", "{F6FE2A43-7AA8-4981-B0EA-E1C2E1BEFA44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,22 +16,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{77A4D00F-CA39-4700-97F3-C385A62BF740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77A4D00F-CA39-4700-97F3-C385A62BF740}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77A4D00F-CA39-4700-97F3-C385A62BF740}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77A4D00F-CA39-4700-97F3-C385A62BF740}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9F1A6B1-0893-4865-ACBD-C666DDA05985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9F1A6B1-0893-4865-ACBD-C666DDA05985}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9F1A6B1-0893-4865-ACBD-C666DDA05985}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9F1A6B1-0893-4865-ACBD-C666DDA05985}.Release|Any CPU.Build.0 = Release|Any CPU
-		{04905A1F-633B-4CE3-A9E4-CB1DB1F03E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04905A1F-633B-4CE3-A9E4-CB1DB1F03E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04905A1F-633B-4CE3-A9E4-CB1DB1F03E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{04905A1F-633B-4CE3-A9E4-CB1DB1F03E59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{355DEE24-478D-4C91-9921-F56A72B28ECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{355DEE24-478D-4C91-9921-F56A72B28ECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{355DEE24-478D-4C91-9921-F56A72B28ECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{355DEE24-478D-4C91-9921-F56A72B28ECA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6FE2A43-7AA8-4981-B0EA-E1C2E1BEFA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6FE2A43-7AA8-4981-B0EA-E1C2E1BEFA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6FE2A43-7AA8-4981-B0EA-E1C2E1BEFA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6FE2A43-7AA8-4981-B0EA-E1C2E1BEFA44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

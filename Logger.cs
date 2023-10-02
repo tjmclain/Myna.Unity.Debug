@@ -6,45 +6,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace Myna.Unity.Debug
 {
 	// In order to navigate to where the original call was made from when I double click the log in the console,
 	// I need to export my debug scripts as a separate DLL
 	public class Logger
 	{
-		private LogType _filterLogType = LogType.Log;
-
-		public LogType FilterLogType
-		{
-			get => _filterLogType;
-			set => _filterLogType = value;
-		}
-
-		private LogType _editModeFilterLogType = LogType.Log;
-
-		public LogType EditModeFilterLogType
-		{
-			get => _editModeFilterLogType;
-			set => _editModeFilterLogType = value;
-		}
-
-		private string? _callerTypeName = null;
-
-		public string? CallerTypeName
-		{
-			get => _callerTypeName;
-			set => _callerTypeName = value;
-		}
-
 		public static readonly Logger Default = new Logger();
-
 		private static readonly ILogger _unityLogger;
-		private static readonly string _namespace;
-
+		private static readonly string _namespace = typeof(Logger).Namespace;
 		private static readonly Regex _coroutineRegex = new Regex(@"^(\S+)\+<(\S+)>d__\d+$");
 		private static readonly Regex _anonMethodRegex = new Regex(@"^<(\S+)>b__\d+_\d+$");
 		private static readonly Regex _localMethodRegex = new Regex(@"^<(\S+)>g__\S+|\d+_\d+$");
@@ -62,45 +32,36 @@ namespace Myna.Unity.Debug
 			{ typeof(bool), "bool" },
 		};
 
-		#region Constructors
+		public LogType FilterLogType { get; set; } = LogType.Log;
 
-		public Logger()
-		{
-			_filterLogType = LogType.Log;
-			_editModeFilterLogType = LogType.Log;
-		}
+		public LogType EditModeFilterLogType { get; set; } = LogType.Log;
+
+		public string? CallerTypeName { get; set; } = null;
+
+		#region Constructors
 
 		static Logger()
 		{
 			_unityLogger = UnityEngine.Debug.unityLogger;
-			_namespace = typeof(Logger).Namespace;
 		}
 
 		#endregion Constructors
 
 		#region Static Interface
 
-		public static string GetTag(object caller, string methodName)
-			=> GetTag(caller.GetType(), methodName);
-
-		public static string GetTag(Type callerType, string methodName)
-			=> FormatTag(callerType.Name, methodName);
-
 		public static string FormatTag(string callerTypeName, string methodName)
 		{
 			var sb = new StringBuilder();
 			if (!string.IsNullOrEmpty(callerTypeName))
 			{
-				sb.Append('[');
 				sb.Append(callerTypeName);
-				sb.Append("]");
 			}
 
 			if (!string.IsNullOrEmpty(methodName))
 			{
 				if (sb.Length > 0)
 				{
-					sb.Append(" ");
+					sb.Append(".");
 				}
 				sb.Append(methodName);
 			}
@@ -148,14 +109,11 @@ namespace Myna.Unity.Debug
 
 		public bool IsLogTypeAllowed(LogType logType)
 		{
-#if UNITY_EDITOR
-			var allowedLogType = EditorApplication.isPlaying
-				? _filterLogType
-				: _editModeFilterLogType;
+			var allowedLogType = Application.isPlaying
+				? FilterLogType
+				: EditModeFilterLogType;
+
 			return (int)logType <= (int)allowedLogType;
-#else
-			return (int)logType <= (int)_filterLogType;
-#endif
 		}
 
 		#endregion Getter/Setter Methods
@@ -182,12 +140,16 @@ namespace Myna.Unity.Debug
 
 		public void Log(LogType logType, object message, UnityEngine.Object context)
 		{
-			using (var log = CreateLog(logType))
+			if (!IsLogTypeAllowed(logType))
 			{
-				log.Context = context;
-				log.Append(message.ToString());
-				Log(log);
+				return;
 			}
+
+			using var log = CreateMessage(logType);
+
+			log.Context = context;
+			log.Append(message.ToString());
+			log.Print();
 		}
 
 		public void Log(LogType logType, string tag, object message)
@@ -197,34 +159,30 @@ namespace Myna.Unity.Debug
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(tag) || TryGetTag(ref tag))
-			{
-				_unityLogger.Log(logType, tag, message);
-			}
-			else
-			{
-				_unityLogger.Log(logType, message);
-			}
+			using var log = CreateMessage(logType);
+
+			log.Tag = tag;
+			log.Append(message.ToString());
+			log.Print();
 		}
 
-		public void Log(DebugLogBuilder log)
+		public void Log(Message message)
 		{
-			if (!IsLogTypeAllowed(log.LogType))
+			if (!IsLogTypeAllowed(message.LogType))
 			{
 				return;
 			}
 
-			string? callerTypeName = log.CallerTypeName;
-			string? methodName = log.MethodName;
+			string tag = string.IsNullOrEmpty(message.Tag)
+				? GetDefaultTag() : message.Tag;
 
-			if (TryGetCallerTypeAndMethodName(ref callerTypeName, ref methodName))
+			if (!string.IsNullOrEmpty(tag))
 			{
-				string tag = FormatTag(callerTypeName, methodName);
-				_unityLogger.Log(log.LogType, tag, log.Message, log.Context);
+				_unityLogger.Log(message.LogType, tag, message, message.Context);
 			}
 			else
 			{
-				_unityLogger.Log(log.LogType, (object)log.Message, log.Context);
+				_unityLogger.Log(message.LogType, message, message.Context);
 			}
 		}
 
@@ -232,40 +190,24 @@ namespace Myna.Unity.Debug
 
 		#region DebugLogBuilder Utility Methods
 
-		public DebugLogBuilder CreateLog(LogType logType)
+		public Message CreateMessage(LogType logType)
 		{
-			var log = DebugLogBuilder.Create(logType);
-			log.CallerTypeName = CallerTypeName;
+			var log = Message.Create(logType);
 			log.Logger = this;
 			return log;
 		}
 
-		public DebugLogBuilder CreateLog()
-			=> CreateLog(LogType.Log);
-
-		public DebugLogBuilder CreateWarning()
-			=> CreateLog(LogType.Warning);
-
-		public DebugLogBuilder CreateError()
-			=> CreateLog(LogType.Error);
-
 		#endregion DebugLogBuilder Utility Methods
 
 		// https://answers.unity.com/questions/289006/catching-double-clicking-console-messages.html
-		private static bool TryGetTag(ref string tag)
+		private static string GetDefaultTag()
 		{
-			string? callerTypeName = null;
-			string? methodName = null;
-
-			if (TryGetCallerTypeAndMethodName(ref callerTypeName, ref methodName))
-			{
-				tag = FormatTag(callerTypeName, methodName);
-				return true;
-			}
-			return false;
+			return TryGetCallerTypeAndMethodName(out string callerTypeName, out string methodName)
+				? FormatTag(callerTypeName, methodName)
+				: string.Empty;
 		}
 
-		private static bool TryGetCallerTypeAndMethodName(ref string? callerTypeName, ref string? methodName)
+		private static bool TryGetCallerTypeAndMethodName(out string callerTypeName, out string methodName)
 		{
 			static bool GetStackFrameIndex(StackTrace stackTrace, out int index)
 			{
@@ -285,10 +227,8 @@ namespace Myna.Unity.Debug
 				return false;
 			}
 
-			if (!string.IsNullOrEmpty(callerTypeName) && !string.IsNullOrEmpty(methodName))
-			{
-				return true;
-			}
+			callerTypeName = default;
+			methodName = default;
 
 			var stackTrace = new StackTrace();
 			if (stackTrace.FrameCount == 0)
