@@ -6,11 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="UnityEditor">
-      <HintPath>..\..\..\..\..\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
 
