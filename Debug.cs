@@ -1,5 +1,5 @@
 ﻿using System;
-using LogType = UnityEngine.LogType;
+using UnityEngine;
 
 namespace Myna.Unity.Debug
 {
@@ -10,37 +10,25 @@ namespace Myna.Unity.Debug
 	{
 		public static readonly Logger Logger = new Logger();
 
-		public static void Log(string message)
-			=> Logger.Log(message);
-
-		public static void Log(LogType logType, string message)
-			=> Logger.Log(logType, message);
-
 		#region UnityEngine.Debug
-
-		public static void Log(LogType logType, object message)
-			=> Logger.Log(logType, message);
-
-		public static void Log(LogType logType, object message, UnityObject context)
-			=> Logger.Log(logType, message, context);
 
 		public static void Log(object message)
 			=> Logger.Log(LogType.Log, message);
 
 		public static void LogFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Log, format, args);
+			=> Logger.LogFormat(format, args);
 
 		public static void LogWarning(object message)
 			=> Logger.Log(LogType.Warning, message);
 
 		public static void LogWarningFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Warning, format, args);
+			=> Logger.LogFormat(format, args);
 
 		public static void LogError(object message)
 			=> Logger.Log(LogType.Error, message);
 
 		public static void LogErrorFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Error, format, args);
+			=> Logger.LogFormat(format, args);
 
 		public static void LogException(Exception exception)
 			=> Logger.LogException(exception);
@@ -50,125 +38,24 @@ namespace Myna.Unity.Debug
 
 		#endregion UnityEngine.Debug
 
-		#region Conditional Methods
+		#region LogInfo
 
-		public static void LogIf(object message, Func<bool> condition)
-			=> LogIf(message, condition.Invoke());
+		public static LogInfo Tag(string tag) => LogInfo.Get().Tag(tag);
 
-		public static void LogIf(object message, bool condition)
-		{
-			if (condition)
-			{
-				Logger.Log(LogType.Log, message);
-			}
-		}
+		public static LogInfo Tag(object caller) => LogInfo.Get().Tag(caller);
 
-		public static void LogWarningIf(object message, Func<bool> condition)
-			=> LogWarningIf(message, condition.Invoke());
+		public static LogInfo Tag(object caller, string methodName) => LogInfo.Get().Tag(caller, methodName);
 
-		public static void LogWarningIf(object message, bool condition)
-		{
-			if (condition)
-			{
-				Logger.Log(LogType.Warning, message);
-			}
-		}
+		public static LogInfo TagAuto() => LogInfo.Get().TagAuto();
 
-		public static void LogErrorIf(object message, Func<bool> condition)
-			=> LogErrorIf(message, condition.Invoke());
+		public static LogInfo Context(UnityObject context) => LogInfo.Get().Context(context);
 
-		public static void LogErrorIf(object message, bool condition)
-		{
-			if (condition)
-			{
-				Logger.Log(LogType.Warning, message);
-			}
-		}
+		public static LogInfo If(bool condition) => LogInfo.Get().If(condition);
 
-		#endregion Conditional Methods
+		public static LogInfo If(Func<bool> condition) => LogInfo.Get().If(condition);
 
-		#region Log Concatenation Methods
+		public static LogInfo If<T>(Predicate<T> condition, T obj) => LogInfo.Get().If(condition, obj);
 
-		public static void Log(LogType logType, string a, string b)
-			=> Log(null, logType, a, b);
-
-		public static void Log(string a, string b)
-			=> Log(null, LogType.Log, a, b);
-
-		public static void LogWarning(string a, string b)
-			=> Log(null, LogType.Warning, a, b);
-
-		public static void LogError(string a, string b)
-			=> Log(null, LogType.Error, a, b);
-
-		public static void Log(UnityObject context, LogType logType, string a, string b)
-		{
-			using var log = Message.Create(logType);
-			log.Context = context;
-			log.Append(a);
-			log.Append(b);
-			log.Print();
-		}
-
-		public static void Log(LogType logType, string a, string b, string c)
-			=> Log(null, logType, a, b, c);
-
-		public static void Log(string a, string b, string c)
-			=> Log(null, LogType.Log, a, b, c);
-
-		public static void LogWarning(string a, string b, string c)
-			=> Log(null, LogType.Warning, a, b, c);
-
-		public static void LogError(string a, string b, string c)
-			=> Log(null, LogType.Error, a, b, c);
-
-		public static void Log(UnityObject context, LogType logType, string a, string b, string c)
-		{
-			using var log = Message.Create(logType);
-			log.Context = context;
-			log.Append(a);
-			log.Append(b);
-			log.Append(c);
-			log.Print();
-		}
-
-		public static void Log(LogType logType, string a, string b, string c, string d)
-			=> Log(null, logType, a, b, c, d);
-
-		public static void Log(string a, string b, string c, string d)
-			=> Log(null, LogType.Log, a, b, c, d);
-
-		public static void LogWarning(string a, string b, string c, string d)
-			=> Log(null, LogType.Warning, a, b, c, d);
-
-		public static void LogError(string a, string b, string c, string d)
-			=> Log(null, LogType.Error, a, b, c, d);
-
-		public static void Log(UnityObject context, LogType logType, string a, string b, string c, string d)
-		{
-			using var log = Message.Create(logType);
-			log.Context = context;
-			log.Append(a);
-			log.Append(b);
-			log.Append(c);
-			log.Append(d);
-			log.Print();
-		}
-
-		public static void Log(LogType logType, params string[] messages)
-			=> Log(null, logType, messages);
-
-		public static void Log(UnityObject context, LogType logType, params string[] messages)
-		{
-			using var log = Message.Create(logType);
-			log.Context = context;
-			foreach (string message in messages)
-			{
-				log.Append(message);
-			}
-			log.Print();
-		}
-
-		#endregion Log Concatenation Methods
+		#endregion LogInfo
 	}
 }
