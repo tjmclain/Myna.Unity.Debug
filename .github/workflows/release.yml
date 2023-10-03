@@ -14,9 +14,9 @@ jobs:
 
     # https://stackoverflow.com/questions/71630227/github-action-how-to-remove-starting-v-from-variable
     - name: Set VERSION variable from tag
-        run: | 
-          echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-          echo "VERSION=${TAG:v}" >> $GITHUB_ENV
+      run: |
+        echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+        echo "VERSION=${TAG:v}" >> $GITHUB_ENV
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
