@@ -1,6 +1,6 @@
 {
   "name": "com.mynagames.unity-debug",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "displayName": "Unity Debug Extensions",
   "description": "Various utility and helper methods for outputting debug information in Unity.",
   "author": "Thomas McLain",
