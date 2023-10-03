@@ -11,4 +11,8 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".github\workflows\release.yml" />
+  </ItemGroup>
+
 </Project>
