@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);UNITY_5_3_OR_NEWER;DEVELOPMENT_BUILD</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>

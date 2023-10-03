@@ -1,5 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿#if UNITY_5_3_OR_NEWER
+
+using System;
 
 namespace Myna.Unity.Debug
 {
@@ -12,15 +13,15 @@ namespace Myna.Unity.Debug
 
 		#region UnityEngine.Debug
 
-		public static void Log(object message) => Logger.Log(LogType.Log, message);
+		public static void Log(object message) => Logger.Log(message);
 
 		public static void LogFormat(string format, params object[] args) => Logger.LogFormat(format, args);
 
-		public static void LogWarning(object message) => Logger.Log(LogType.Warning, message);
+		public static void LogWarning(object message) => Logger.LogWarning(message);
 
 		public static void LogWarningFormat(string format, params object[] args) => Logger.LogWarningFormat(format, args);
 
-		public static void LogError(object message) => Logger.Log(LogType.Error, message);
+		public static void LogError(object message) => Logger.LogError(message);
 
 		public static void LogErrorFormat(string format, params object[] args) => Logger.LogErrorFormat(format, args);
 
@@ -51,3 +52,5 @@ namespace Myna.Unity.Debug
 		#endregion LogInfo / Properties
 	}
 }
+
+#endif
