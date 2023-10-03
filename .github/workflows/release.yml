@@ -15,12 +15,12 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
 
-    - name: Set MyProject.csproj version
+    - name: Set Myna.Unity.Debug.csproj version
       id: update
       uses: vers-one/dotnet-project-version-updater@v1.3
       with:
         file: "Myna.Unity.Debug.csproj"
-        version: ${{ github.event.inputs.version }}
+        version: ${{ github.event.release.version }}
 
     - name: Build
       run: dotnet build -c Release
@@ -37,6 +37,6 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@v5
       with:
-        commit-message: Update .csproj version to ${{ github.event.inputs.version }}
-        branch: update-version-${{ github.event.inputs.version }}
+        commit-message: Update .csproj version to ${{ github.event.release.version }}
+        branch: update-version-${{ github.event.release.version }}
         title: Update .csproj version to latest
