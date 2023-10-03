@@ -20,7 +20,7 @@ jobs:
       uses: vers-one/dotnet-project-version-updater@v1.3
       with:
         file: "Myna.Unity.Debug.csproj"
-        version: ${{ github.event.release.version }}
+        version: ${{ github.event.release.tag_name }}
 
     - name: Build
       run: dotnet build -c Release
@@ -37,6 +37,6 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@v5
       with:
-        commit-message: Update .csproj version to ${{ github.event.release.version }}
-        branch: update-version-${{ github.event.release.version }}
+        commit-message: Update .csproj version to ${{ github.event.release.tag_name }}
+        branch: update-version-${{ github.event.release.tag_name }}
         title: Update .csproj version to latest
