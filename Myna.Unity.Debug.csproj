@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>enable</Nullable>
+    <Authors>Thomas McLain</Authors>
+    <Company>Myna Games</Company>
+    <Title>Unity Debug Extensions</Title>
+    <RepositoryUrl>https://github.com/tjmclain/Myna.Unity.Debug</RepositoryUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
