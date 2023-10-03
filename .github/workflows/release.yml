@@ -12,6 +12,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    # https://stackoverflow.com/questions/71630227/github-action-how-to-remove-starting-v-from-variable
+    - name: Set VERSION variable from tag
+        run: | 
+          echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+          echo "VERSION=${TAG:v}" >> $GITHUB_ENV
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v1
 
@@ -20,7 +26,7 @@ jobs:
       uses: vers-one/dotnet-project-version-updater@v1.3
       with:
         file: "Myna.Unity.Debug.csproj"
-        version: ${{ github.event.release.tag_name }}
+        version: $VERSION
 
     - name: Build
       run: dotnet build -c Release
@@ -37,6 +43,6 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@v5
       with:
-        commit-message: Update .csproj version to ${{ github.event.release.tag_name }}
-        branch: update-version-${{ github.event.release.tag_name }}
+        commit-message: Update .csproj version to $VERSION
+        branch: update-version-$VERSION
         title: Update .csproj version to latest
