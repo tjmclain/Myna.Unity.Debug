@@ -1,49 +1,42 @@
 ﻿name: Release to NuGet
 
 on:
-  release:
-    types: [published]
-  
+    release:
+        types: [published]
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    build:
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      # this isn't working right now...
-    # # https://stackoverflow.com/questions/71630227/github-action-how-to-remove-starting-v-from-variable
-    # - name: Set VERSION variable from tag
-    #   run: |
-    #     echo "TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-    #     echo "VERSION=${TAG:v}" >> $GITHUB_ENV
+            - name: Setup .NET SDK
+              uses: actions/setup-dotnet@v1
 
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v1
+            - name: Set Myna.Unity.Debug.csproj version
+              id: update
+              uses: vers-one/dotnet-project-version-updater@v1.3
+              with:
+                  file: "Myna.Unity.Debug.csproj"
+                  version: ${{ github.event.release.tag_name }}
 
-    - name: Set Myna.Unity.Debug.csproj version
-      id: update
-      uses: vers-one/dotnet-project-version-updater@v1.3
-      with:
-        file: "Myna.Unity.Debug.csproj"
-        version: "$VERSION"
+            - name: Build
+              run: dotnet build -c Release
 
-    - name: Build
-      run: dotnet build -c Release
+            - name: Test
+              run: dotnet test -c Release --no-build
 
-    - name: Test
-      run: dotnet test -c Release --no-build
+            - name: Pack nugets
+              run: dotnet pack -c Release --no-build --output .
 
-    - name: Pack nugets
-      run: dotnet pack -c Release --no-build --output .
+            - name: Push to NuGet
+              run: dotnet nuget push "*.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
 
-    - name: Push to NuGet
-      run: dotnet nuget push "*.nupkg" --api-key ${{secrets.nuget_api_key}} --source https://api.nuget.org/v3/index.json
-
-    # - name: Create pull request
-    #   uses: peter-evans/create-pull-request@v5
-    #   with:
-    #     commit-message: "Update .csproj version to $VERSION"
-    #     branch: "update-version-$VERSION"
-    #     title: Update .csproj version to latest
+            - name: Create pull request
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  commit-message: Update .csproj version to ${{ github.event.release.tag_name }}
+                  branch: "update-version-${{ github.event.release.tag_name }}"
+                  title: Update .csproj version to latest
