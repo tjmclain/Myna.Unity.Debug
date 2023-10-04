@@ -1,6 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
-
-using System;
+﻿using System;
 
 namespace Myna.Unity.Debug
 {
@@ -101,5 +99,3 @@ namespace Myna.Unity.Debug
 		}
 	}
 }
-
-#endif

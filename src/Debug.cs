@@ -1,6 +1,5 @@
-﻿#if UNITY_5_3_OR_NEWER
-
-using System;
+﻿using System;
+using UnityEngine;
 
 namespace Myna.Unity.Debug
 {
@@ -13,44 +12,97 @@ namespace Myna.Unity.Debug
 
 		#region UnityEngine.Debug
 
-		public static void Log(object message) => Logger.Log(message);
+		public static void Log(object message)
+			=> Logger.Log(message);
 
-		public static void LogFormat(string format, params object[] args) => Logger.LogFormat(format, args);
+		public static void LogFormat(string format, params object[] args)
+			=> Logger.LogFormat(format, args);
 
-		public static void LogWarning(object message) => Logger.LogWarning(message);
+		public static void LogWarning(object message)
+			=> Logger.LogWarning(message);
 
-		public static void LogWarningFormat(string format, params object[] args) => Logger.LogWarningFormat(format, args);
+		public static void LogWarningFormat(string format, params object[] args)
+			=> Logger.LogWarningFormat(format, args);
 
-		public static void LogError(object message) => Logger.LogError(message);
+		public static void LogError(object message)
+			=> Logger.LogError(message);
 
-		public static void LogErrorFormat(string format, params object[] args) => Logger.LogErrorFormat(format, args);
+		public static void LogErrorFormat(string format, params object[] args)
+			=> Logger.LogErrorFormat(format, args);
 
-		public static void LogException(Exception exception) => Logger.LogException(exception);
+		public static void LogException(Exception exception)
+			=> UnityEngine.Debug.LogException(exception);
 
-		public static void Assert(bool condition) => Logger.Assert(condition);
+		public static void Assert(bool condition)
+			=> UnityEngine.Debug.Assert(condition);
 
 		#endregion UnityEngine.Debug
 
-		#region LogInfo / Properties
+		#region LogInfo Property Setters
 
-		public static LogInfo Tag(string tag) => LogInfo.Get().Tag(tag);
+		public static LogInfo Tag(string tag)
+			=> LogInfo.Get().Tag(tag);
 
-		public static LogInfo Tag(object caller) => LogInfo.Get().Tag(caller);
+		public static LogInfo Tag(object caller)
+			=> LogInfo.Get().Tag(caller);
 
-		public static LogInfo Tag(object caller, string methodName) => LogInfo.Get().Tag(caller, methodName);
+		public static LogInfo Tag(object caller, string methodName)
+			=> LogInfo.Get().Tag(caller, methodName);
 
-		public static LogInfo TagAuto() => LogInfo.Get().TagAuto();
+		public static LogInfo TagAuto()
+			=> LogInfo.Get().TagAuto();
 
-		public static LogInfo Context(UnityObject context) => LogInfo.Get().Context(context);
+		public static LogInfo Context(UnityObject context)
+			=> LogInfo.Get().Context(context);
 
-		public static LogInfo If(bool condition) => LogInfo.Get().If(condition);
+		#endregion LogInfo Property Setters
 
-		public static LogInfo If(Func<bool> condition) => LogInfo.Get().If(condition);
+		#region LogInfo.Log
 
-		public static LogInfo If<T>(Predicate<T> condition, T obj) => LogInfo.Get().If(condition, obj);
+		public static void Log(object msg0, object msg1)
+			=> LogInfo.Get().Log(msg0, msg1);
 
-		#endregion LogInfo / Properties
+		public static void Log(object msg0, object msg1, object msg2)
+			=> LogInfo.Get().Log(msg0, msg1, msg2);
+
+		public static void Log(object msg0, object msg1, object msg2, object msg3)
+			=> LogInfo.Get().Log(msg0, msg1, msg2, msg3);
+
+		public static void Log(params object[] message)
+			=> LogInfo.Get().Log(message);
+
+		#endregion LogInfo.Log
+
+		#region LogInfo.LogWarning
+
+		public static void LogWarning(object msg0, object msg1)
+			=> LogInfo.Get().LogWarning(msg0, msg1);
+
+		public static void LogWarning(object msg0, object msg1, object msg2)
+			=> LogInfo.Get().LogWarning(msg0, msg1, msg2);
+
+		public static void LogWarning(object msg0, object msg1, object msg2, object msg3)
+			=> LogInfo.Get().LogWarning(msg0, msg1, msg2, msg3);
+
+		public static void LogWarning(params object[] message)
+			=> LogInfo.Get().LogWarning(message);
+
+		#endregion LogInfo.LogWarning
+
+		#region LogInfo.LogError
+
+		public static void LogError(object msg0, object msg1)
+			=> LogInfo.Get().LogError(msg0, msg1);
+
+		public static void LogError(object msg0, object msg1, object msg2)
+			=> LogInfo.Get().LogError(msg0, msg1, msg2);
+
+		public static void LogError(object msg0, object msg1, object msg2, object msg3)
+			=> LogInfo.Get().LogError(msg0, msg1, msg2, msg3);
+
+		private static void LogError(params object[] message)
+			=> LogInfo.Get().LogError(message);
+
+		#endregion LogInfo.LogError
 	}
 }
-
-#endif

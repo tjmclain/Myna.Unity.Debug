@@ -1,6 +1,4 @@
-﻿#if UNITY_5_3_OR_NEWER
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,22 +17,13 @@ namespace Myna.Unity.Debug
 		private Logger _logger = Debug.Logger;
 
 		public LogType LogType { get; private set; } = LogType.Log;
-		public bool Invalid { get; private set; } = false;
 
 		public static LogInfo Get()
 		{
 			return _pool.TryDequeue(out var logInfo) ? logInfo : new LogInfo();
 		}
 
-		#region Property Getters
-
 		public object GetMessage() => string.Join(_separator, _message);
-
-		public string GetTag() => _tag;
-
-		public UnityObject GetContext() => _context;
-
-		#endregion Property Getters
 
 		#region Property Setters
 
@@ -71,24 +60,6 @@ namespace Myna.Unity.Debug
 		public LogInfo Context(UnityObject context)
 		{
 			_context = context;
-			return this;
-		}
-
-		public LogInfo If(bool condition)
-		{
-			Invalid = !condition;
-			return this;
-		}
-
-		public LogInfo If(Func<bool> condition)
-		{
-			Invalid = !condition();
-			return this;
-		}
-
-		public LogInfo If<T>(Predicate<T> condition, T obj)
-		{
-			Invalid = !condition(obj);
 			return this;
 		}
 
@@ -202,7 +173,10 @@ namespace Myna.Unity.Debug
 		{
 			_message.Add(message);
 
-			PrintAndRelease();
+			// print log
+			_logger.Log(LogType, GetMessage(), _tag, _context);
+
+			Release();
 		}
 
 		private void Print(object msg0, object msg1)
@@ -210,7 +184,10 @@ namespace Myna.Unity.Debug
 			_message.Add(msg0);
 			_message.Add(msg1);
 
-			PrintAndRelease();
+			// print log
+			_logger.Log(LogType, GetMessage(), _tag, _context);
+
+			Release();
 		}
 
 		private void Print(object msg0, object msg1, object msg2)
@@ -219,7 +196,10 @@ namespace Myna.Unity.Debug
 			_message.Add(msg1);
 			_message.Add(msg2);
 
-			PrintAndRelease();
+			// print log
+			_logger.Log(LogType, GetMessage(), _tag, _context);
+
+			Release();
 		}
 
 		private void Print(object msg0, object msg1, object msg2, object msg3)
@@ -229,21 +209,24 @@ namespace Myna.Unity.Debug
 			_message.Add(msg2);
 			_message.Add(msg3);
 
-			PrintAndRelease();
+			// print log
+			_logger.Log(LogType, GetMessage(), _tag, _context);
+
+			Release();
 		}
 
 		private void Print(object[] message)
 		{
 			_message.AddRange(message);
 
-			PrintAndRelease();
+			// print log
+			_logger.Log(LogType, GetMessage(), _tag, _context);
+
+			Release();
 		}
 
-		private void PrintAndRelease()
+		private void Release()
 		{
-			// print log
-			_logger.Log(this);
-
 			// reset members to defaults
 			_message.Clear();
 			_tag = string.Empty;
@@ -259,5 +242,3 @@ namespace Myna.Unity.Debug
 		#endregion Print Methods
 	}
 }
-
-#endif
