@@ -8,30 +8,30 @@ namespace Myna.Unity.Debug
 	// static wrapper for Logger calls
 	public static class Debug
 	{
-		public static readonly Logger Logger = new Logger();
+		public static readonly ILogger Logger = UnityEngine.Debug.unityLogger;
 
 		#region UnityEngine.Debug
 
 		public static void Log(object message)
-			=> Logger.Log(message);
+			=> Logger.Log(LogType.Log, message);
 
 		public static void LogFormat(string format, params object[] args)
-			=> Logger.LogFormat(format, args);
+			=> Logger.LogFormat(LogType.Log, format, args);
 
 		public static void LogWarning(object message)
-			=> Logger.LogWarning(message);
+			=> Logger.Log(LogType.Warning, message);
 
 		public static void LogWarningFormat(string format, params object[] args)
-			=> Logger.LogWarningFormat(format, args);
+			=> Logger.LogFormat(LogType.Warning, format, args);
 
 		public static void LogError(object message)
-			=> Logger.LogError(message);
+			=> Logger.Log(LogType.Error, message);
 
 		public static void LogErrorFormat(string format, params object[] args)
-			=> Logger.LogErrorFormat(format, args);
+			=> Logger.LogFormat(LogType.Error, format, args);
 
 		public static void LogException(Exception exception)
-			=> UnityEngine.Debug.LogException(exception);
+			=> Logger.LogException(exception);
 
 		public static void Assert(bool condition)
 			=> UnityEngine.Debug.Assert(condition);
@@ -100,7 +100,7 @@ namespace Myna.Unity.Debug
 		public static void LogError(object msg0, object msg1, object msg2, object msg3)
 			=> LogInfo.Get().LogError(msg0, msg1, msg2, msg3);
 
-		private static void LogError(params object[] message)
+		public static void LogError(params object[] message)
 			=> LogInfo.Get().LogError(message);
 
 		#endregion LogInfo.LogError

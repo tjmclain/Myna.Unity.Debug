@@ -7,7 +7,7 @@
     <Company>Myna Games</Company>
     <Title>Unity Debug Extensions</Title>
     <RepositoryUrl>https://github.com/tjmclain/Myna.Unity.Debug</RepositoryUrl>
-    <VersionPrefix>2.0.0</VersionPrefix>
+    <VersionPrefix>2.1.0</VersionPrefix>
     <PackRelease>true</PackRelease>
   </PropertyGroup>
 
@@ -17,9 +17,8 @@
 
   <ItemGroup>
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll')">C:\Program Files\Unity\Hub\Editor\2022.1.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Managed\UnityEngine.dll')">C:\Program Files\Unity\Hub\Editor\2022.3.10f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-
 </Project>
