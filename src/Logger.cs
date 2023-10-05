@@ -68,10 +68,6 @@ namespace Myna.Unity.Debug
 				return;
 			}
 
-			if (string.IsNullOrEmpty(tag))
-			{
-				tag = TagUtility.GetDefaultTag();
-			}
 			_unityLogger.Log(logType, tag, message, context);
 		}
 

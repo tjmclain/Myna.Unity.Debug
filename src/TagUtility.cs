@@ -9,7 +9,7 @@ namespace Myna.Unity.Debug
 {
 	public static class TagUtility
 	{
-		private static readonly string _namespace = nameof(Unity.Debug);
+		private const string _namespace = "Myna.Unity.Debug";
 
 		private static readonly Regex _coroutineRegex = new Regex(@"^(\S+)\+<(\S+)>d__\d+$");
 		private static readonly Regex _anonMethodRegex = new Regex(@"^<(\S+)>b__\d+_\d+$");
