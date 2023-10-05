@@ -7,7 +7,7 @@
     <Company>Myna Games</Company>
     <Title>Unity Debug Extensions</Title>
     <RepositoryUrl>https://github.com/tjmclain/Myna.Unity.Debug</RepositoryUrl>
-    <VersionPrefix>2.1.0</VersionPrefix>
+    <VersionPrefix>2.2.0</VersionPrefix>
     <PackRelease>true</PackRelease>
   </PropertyGroup>
 
