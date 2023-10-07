@@ -8,40 +8,44 @@ namespace Myna.Unity.Debug
 	// static wrapper for Logger calls
 	public static class Debug
 	{
-		public static readonly ILogger Logger = UnityEngine.Debug.unityLogger;
+		public static ILogger Logger => UnityEngine.Debug.unityLogger;
 
 		#region UnityEngine.Debug
 
 		public static void Log(object message)
 			=> Logger.Log(LogType.Log, message);
 
-		public static void LogFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Log, format, args);
-
 		public static void LogWarning(object message)
 			=> Logger.Log(LogType.Warning, message);
-
-		public static void LogWarningFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Warning, format, args);
 
 		public static void LogError(object message)
 			=> Logger.Log(LogType.Error, message);
 
-		public static void LogErrorFormat(string format, params object[] args)
-			=> Logger.LogFormat(LogType.Error, format, args);
+		public static void LogException(Exception exception, UnityObject context = null)
+			=> Logger.LogException(exception, context);
 
-		public static void LogException(Exception exception)
-			=> Logger.LogException(exception);
+		public static void Assert(bool condition, UnityObject context = null)
+		{
+			if (!condition)
+			{
+				Logger.Log(LogType.Assert, null, "Assertion failed", context);
+			}
+		}
 
-		public static void Assert(bool condition)
-			=> UnityEngine.Debug.Assert(condition);
+		public static void Assert(bool condition, object message, UnityObject context = null)
+		{
+			if (!condition)
+			{
+				Logger.Log(LogType.Assert, null, message, context);
+			}
+		}
 
 		#endregion UnityEngine.Debug
 
 		#region LogInfo Property Setters
 
 		public static LogInfo Tag(string tag)
-			=> LogInfo.Get().Tag(tag);
+		=> LogInfo.Get().Tag(tag);
 
 		public static LogInfo Tag(object caller)
 			=> LogInfo.Get().Tag(caller);

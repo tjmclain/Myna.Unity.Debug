@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Myna.Unity.Debug
 {
@@ -6,96 +7,79 @@ namespace Myna.Unity.Debug
 
 	public static class UnityObjectDebugExtensions
 	{
-		#region Log Methods
-
 		public static void Log(this UnityObject context, object message)
 		{
-			Debug.Context(context).Tag(context).Log(message);
-		}
-
-		public static void Log(this UnityObject context, object msg0, object msg1)
-		{
-			Debug.Context(context).Tag(context).Log(msg0, msg1);
-		}
-
-		public static void Log(this UnityObject context, object msg0, object msg1, object msg2)
-		{
-			Debug.Context(context).Tag(context).Log(msg0, msg1, msg2);
-		}
-
-		public static void Log(this UnityObject context, object msg0, object msg1, object msg2, object msg3)
-		{
-			Debug.Context(context).Tag(context).Log(msg0, msg1, msg2, msg3);
+			Debug.Logger.Log(
+				LogType.Log,
+				context.GetType().Name,
+				message,
+				context
+				);
 		}
 
 		public static void Log(this UnityObject context, params object[] message)
 		{
-			Debug.Context(context).Tag(context).Log(message);
+			Debug.Logger.Log(
+				LogType.Log,
+				context.GetType().Name,
+				MessageUtility.Join(message),
+				context
+				);
 		}
-
-		#endregion Log Methods
-
-		#region LogWarning Methods
 
 		public static void LogWarning(this UnityObject context, object message)
 		{
-			Debug.Context(context).Tag(context).LogWarning(message);
-		}
-
-		public static void LogWarning(this UnityObject context, object msg0, object msg1)
-		{
-			Debug.Context(context).Tag(context).LogWarning(msg0, msg1);
-		}
-
-		public static void LogWarning(this UnityObject context, object msg0, object msg1, object msg2)
-		{
-			Debug.Context(context).Tag(context).LogWarning(msg0, msg1, msg2);
-		}
-
-		public static void LogWarning(this UnityObject context, object msg0, object msg1, object msg2, object msg3)
-		{
-			Debug.Context(context).Tag(context).LogWarning(msg0, msg1, msg2, msg3);
+			Debug.Logger.Log(
+				LogType.Warning,
+				context.GetType().Name,
+				message,
+				context
+				);
 		}
 
 		public static void LogWarning(this UnityObject context, params object[] message)
 		{
-			Debug.Context(context).Tag(context).LogWarning(message);
+			Debug.Logger.Log(
+				LogType.Warning,
+				context.GetType().Name,
+				MessageUtility.Join(message),
+				context
+				);
 		}
-
-		#endregion LogWarning Methods
-
-		#region LogError Methods
 
 		public static void LogError(this UnityObject context, object message)
 		{
-			Debug.Context(context).Tag(context).LogError(message);
-		}
-
-		public static void LogError(this UnityObject context, object msg0, object msg1)
-		{
-			Debug.Context(context).Tag(context).LogError(msg0, msg1);
-		}
-
-		public static void LogError(this UnityObject context, object msg0, object msg1, object msg2)
-		{
-			Debug.Context(context).Tag(context).LogError(msg0, msg1, msg2);
-		}
-
-		public static void LogError(this UnityObject context, object msg0, object msg1, object msg2, object msg3)
-		{
-			Debug.Context(context).Tag(context).LogError(msg0, msg1, msg2, msg3);
+			Debug.Logger.Log(
+				LogType.Error,
+				context.GetType().Name,
+				message,
+				context
+				);
 		}
 
 		public static void LogError(this UnityObject context, params object[] message)
 		{
-			Debug.Context(context).Tag(context).LogError(message);
+			Debug.Logger.Log(
+				LogType.Error,
+				context.GetType().Name,
+				MessageUtility.Join(message),
+				context
+				);
 		}
-
-		#endregion LogError Methods
 
 		public static void LogException(this UnityObject context, Exception exception)
 		{
-			UnityEngine.Debug.LogException(exception, context);
+			Debug.Logger.LogException(exception, context);
+		}
+
+		public static void Assert(this UnityObject context, bool condition)
+		{
+			Debug.Assert(condition, context);
+		}
+
+		public static void Assert(this UnityObject context, bool condition, object message)
+		{
+			Debug.Assert(condition, message, context);
 		}
 	}
 }
