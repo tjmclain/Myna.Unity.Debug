@@ -28,9 +28,9 @@ namespace Myna.Unity.Debug
 			{ typeof(bool), "bool" },
 		};
 
-		public static string FormatTag(string caller, string methodName)
+		public static string FormatTag(string callerTypeName, string methodName)
 		{
-			return $"{caller}.{methodName}";
+			return $"{callerTypeName}.{methodName}";
 		}
 
 		public static string FormatTag(object caller, string methodName)
