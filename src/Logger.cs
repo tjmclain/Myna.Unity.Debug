@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Myna.Unity.Debug
@@ -7,6 +8,8 @@ namespace Myna.Unity.Debug
 	{
 		public LogType FilterLogType { get; set; } = LogType.Log;
 		public LogType EditModeFilterLogType { get; set; } = LogType.Log;
+		public string Tag { get; set; } = string.Empty;
+		public UnityEngine.Object Owner { get; set; } = null;
 
 		public bool IsLogTypeAllowed(LogType logType)
 		{
@@ -17,34 +20,46 @@ namespace Myna.Unity.Debug
 			return (int)logType <= (int)allowedLogType;
 		}
 
-		public void Assert(bool condition) => UnityEngine.Debug.Assert(condition);
+		#region Public Debug Methods
+
+		public void Log(object message) => LogInternal(LogType.Log, message);
+
+		public void Log(params object[] message) => LogInternal(LogType.Log, MessageUtility.Join(message));
+
+		public void LogWarning(object message) => LogInternal(LogType.Warning, message);
+
+		public void LogWarning(params object[] message) => LogInternal(LogType.Warning, MessageUtility.Join(message));
+
+		public void LogError(object message) => LogInternal(LogType.Error, message);
+
+		public void LogError(params object[] message) => LogInternal(LogType.Error, MessageUtility.Join(message));
 
 		public void LogException(Exception exception) => Debug.Logger.LogException(exception);
 
-		#region Log Methods
+		public void Assert(bool condition) => Debug.Assert(condition);
 
-		public void Log(object message) => Log(LogType.Log, message);
+		#endregion Public Debug Methods
 
-		public void LogFormat(string format, params object[] args) => Log(LogType.Log, string.Format(format, args));
-
-		public void LogWarning(object message) => Log(LogType.Warning, message);
-
-		public void LogWarningFormat(string format, params object[] args) => Log(LogType.Warning, string.Format(format, args));
-
-		public void LogError(object message) => Log(LogType.Error, message);
-
-		public void LogErrorFormat(string format, params object[] args) => Log(LogType.Warning, string.Format(format, args));
-
-		public void Log(LogType logType, object message, string tag = "", UnityEngine.Object context = null)
+		private void LogInternal(LogType logType, object message)
 		{
 			if (!IsLogTypeAllowed(logType))
 			{
 				return;
 			}
 
-			Debug.Logger.Log(logType, tag, message, context);
+			string tag = Tag;
+			TagAutoIfTagIsUnset(ref tag);
+
+			Debug.Logger.Log(logType, tag, message, Owner);
 		}
 
-		#endregion Log Methods
+		[Conditional("DEVELOPMENT_BUILD"), Conditional("UNITY_EDITOR")]
+		private void TagAutoIfTagIsUnset(ref string tag)
+		{
+			if (string.IsNullOrEmpty(tag))
+			{
+				tag = TagUtility.GetDefaultTag();
+			}
+		}
 	}
 }
